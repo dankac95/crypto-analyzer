@@ -14,4 +14,4 @@ Uzytkownik ma miec mozliwosc prowadzenia swojego tzw. portfela. Bedzie mogl wpis
 * waluta konwersji (PLN/USD)
 * czas przechowywania danych
 * klucz API do CoinPlayer
-* interwal pobierania kursow walut
+* interwal pobierania kursow walut 
