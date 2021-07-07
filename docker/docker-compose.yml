@@ -10,4 +10,4 @@ services:
       MYSQL_PASSWORD: crypto1234
       MYSQL_ROOT_PASSWORD: password
     ports:
-      - 3307:3307
+      - 3307:3306
