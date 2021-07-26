@@ -19,13 +19,13 @@ public class CurrencyService {
 
     @Scheduled(cron = "0 * * * * *")
     public void downloadData() {
-        System.out.println("Uruchomiło się o " + LocalDateTime.now());
 
         RestTemplate restTemplate = new RestTemplate();
         ApiResponse apiResponse = restTemplate.getForObject("http://api.coinlayer.com/live?access_key=0ba4a0c1e71c448d4ba8de7497b4c4b5", ApiResponse.class);
         System.out.println();
 
         if (apiResponse.isSuccess()) {
+
             List<Currency> currencyList = repository.findAll();
             Map<String, Currency> currencyMap = currencyList.stream().collect(Collectors.toMap(Currency::getName, currency -> currency));
 
@@ -47,17 +47,17 @@ public class CurrencyService {
     private void updateCurrency(String name, BigDecimal value, Currency currency) {
 
         if (currency != null) {
-            currency.setCurrencyValue(value);
-            currency.setUpdatedAt(LocalDateTime.now());
-            repository.save(currency);
+            setAndSaveCurrencyDb(value, currency);
         } else {
             currency = new Currency();
             currency.setName(name);
-            currency.setCurrencyValue(value);
-            currency.setUpdatedAt(LocalDateTime.now());
-            repository.save(currency);
+            setAndSaveCurrencyDb(value, currency);
         }
     }
 
-
+    private void setAndSaveCurrencyDb(BigDecimal value, Currency currency) {
+        currency.setCurrencyValue(value);
+        currency.setUpdatedAt(LocalDateTime.now());
+        repository.save(currency);
+    }
 }
