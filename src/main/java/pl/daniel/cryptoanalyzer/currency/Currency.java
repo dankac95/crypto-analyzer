@@ -1,25 +1,27 @@
 package pl.daniel.cryptoanalyzer.currency;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@RequiredArgsConstructor
-@Data
 @Entity
-@Table(name = "currency")
+@Getter
+@Setter
 public class Currency {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Column
     private String name;
 
-    @Column
-    private BigDecimal valueCurrency;
+    private BigDecimal currencyValue;
+
+    private LocalDateTime updatedAt;
 }
