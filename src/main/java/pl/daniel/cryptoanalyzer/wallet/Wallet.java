@@ -1,14 +1,18 @@
 package pl.daniel.cryptoanalyzer.wallet;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import pl.daniel.cryptoanalyzer.currency.Currency;
 
-import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Data
+@Getter
+@Setter
 public class Wallet {
 
-    private List<Currency> cash;
+    private Map<String, Currency> wallet;
 }

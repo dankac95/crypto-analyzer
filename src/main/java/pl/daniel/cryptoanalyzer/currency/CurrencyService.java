@@ -60,4 +60,8 @@ public class CurrencyService {
         currency.setUpdatedAt(LocalDateTime.now());
         repository.save(currency);
     }
+
+    public List<Currency> findAllCurrencys() {
+        return repository.findAll();
+    }
 }
