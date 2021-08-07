@@ -14,5 +14,5 @@ import java.util.Map;
 @Setter
 public class Wallet {
 
-    private Map<String, Currency> wallet;
+    private transient Map<String, Currency> wallet;
 }

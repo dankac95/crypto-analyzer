@@ -13,5 +13,4 @@ public class ApiResponse {
     private String target;
     private boolean success;
     private Map<String, BigDecimal> rates;
-
 }
