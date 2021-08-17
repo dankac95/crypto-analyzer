@@ -1,59 +1,46 @@
 package pl.daniel.cryptoanalyzer.web.currency;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import pl.daniel.cryptoanalyzer.currency.ApiResponse;
 import pl.daniel.cryptoanalyzer.currency.Currency;
-import pl.daniel.cryptoanalyzer.currency.CurrencyRepository;
+import pl.daniel.cryptoanalyzer.currency.CurrencyDatabaseSave;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CurrencyClient {
 
-    public static final RestTemplate restTemplate = new RestTemplate();
-    public final String API_KEY = "0ba4a0c1e71c448d4ba8de7497b4c4b5";
-    private final CurrencyRepository repository;
+    // TODO-purban: Klasa ma za duzo odpowiedzialnosci - powinna tylko obslugiwac komunikacje z API, nie powonna w ogole miec zaleznosci do repo
+    public final RestTemplate restTemplate;
+    private final CurrencyDatabaseSave currencyDatabaseSave;
 
-    public void setApiResponseToCurrency(ApiResponse apiResponse, Map<String, Currency> currencyMap) {
+    @Value("${crypto.catalog.query.apiKey}")
+    private String apiKey;
 
-        for (Map.Entry<String, BigDecimal> stringBigDecimalEntry : apiResponse.getRates().entrySet()) {
-            String currencyName = stringBigDecimalEntry.getKey();
 
-            if (currencyMap.containsKey(currencyName)) {
-                Currency currencyDb = currencyMap.get(currencyName);
-                if (currencyDb.getCurrencyValue().compareTo(stringBigDecimalEntry.getValue()) != 0) {
-                    updateCurrency(currencyName, stringBigDecimalEntry.getValue(), currencyDb);
-                }
-            } else {
-                updateCurrency(currencyName, stringBigDecimalEntry.getValue(), null);
-            }
-        }
-    }
-
-    private void setAndSaveCurrencyDb(BigDecimal value, Currency currency) {
-        currency.setCurrencyValue(value);
-        currency.setUpdatedAt(LocalDateTime.now());
-        repository.save(currency);
-    }
-
-    private void updateCurrency(String name, BigDecimal value, Currency currency) {
-
-        if (currency != null) {
-            setAndSaveCurrencyDb(value, currency);
-        } else {
-            currency = new Currency();
-            currency.setName(name);
-            setAndSaveCurrencyDb(value, currency);
-        }
-    }
-
-    public String getDateForRates(String date, String targetCurrency) {
+    public String getDateForRates(LocalDate date, String targetCurrency) {
         return restTemplate.getForObject("http://api.coinlayer.com/{date}?access_key={apiKey}&symbols={targetCurrency}"
-                , String.class, date, API_KEY, targetCurrency);
+                , String.class, date, apiKey, targetCurrency);
+    }
+
+    public void communicationWithApi() {
+
+        ApiResponse apiResponse = restTemplate.getForObject("http://api.coinlayer.com/live?access_key=" + apiKey
+                , ApiResponse.class);
+
+        if (apiResponse.isSuccess()) {
+
+            List<Currency> currencyList = currencyDatabaseSave.findAll();
+            Map<String, Currency> currencyMap = currencyList.stream().collect(Collectors.toMap(Currency::getName, currency -> currency));
+
+            currencyDatabaseSave.setApiResponseToCurrency(apiResponse, currencyMap);
+        }
     }
 }

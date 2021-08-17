@@ -11,8 +11,7 @@ Uzytkownik ma miec mozliwosc prowadzenia swojego tzw. portfela. Bedzie mogl wpis
 4. [MQ] Mozliwosc wysylki notyfikacji/alertow na zadane warunki (email/SMS)
 5. Mozliwosc zaplanowania automatycznej wymiany zadanej ilosci wybranej waluty w wybranym czasie lub po przekroczeniu danego kursu
 
-## Parametry konfiguracyjne
+## Parametry konfiguracyjne (application.properties)
 * waluta konwersji (PLN/USD)
-* czas przechowywania danych
 * klucz API do CoinPlayer
 * interwal pobierania kursow walut 
